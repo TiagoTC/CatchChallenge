@@ -73,9 +73,7 @@ class ItemListActivity : AppCompatActivity(), LifecycleRegistryOwner, SwipeRefre
 			if(it.hasItems()){
 
 				val recyclerView: RecyclerView = findViewById(R.id.item_list)
-				if(it.items != null){
-					recyclerView.adapter = SimpleItemRecyclerViewAdapter(it.items)
-				}
+				recyclerView.adapter = SimpleItemRecyclerViewAdapter(it.items!!)
 			}
 		})
 
