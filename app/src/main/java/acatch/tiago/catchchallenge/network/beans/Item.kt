@@ -1,4 +1,4 @@
-package acatch.tiago.catchchallenge
+package acatch.tiago.catchchallenge.network.beans
 
 import java.io.Serializable
 
