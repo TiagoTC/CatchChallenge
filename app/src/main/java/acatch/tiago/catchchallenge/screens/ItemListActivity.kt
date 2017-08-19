@@ -1,5 +1,11 @@
-package acatch.tiago.catchchallenge
+package acatch.tiago.catchchallenge.screens
 
+import acatch.tiago.catchchallenge.R
+import acatch.tiago.catchchallenge.network.beans.Item
+import android.arch.lifecycle.LifecycleRegistry
+import android.arch.lifecycle.LifecycleRegistryOwner
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
@@ -10,10 +16,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
-import org.apache.commons.io.IOUtils
-import java.nio.charset.Charset
+import android.widget.Toast
 
 
 /**
@@ -24,7 +27,9 @@ import java.nio.charset.Charset
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
  */
-class ItemListActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
+class ItemListActivity : AppCompatActivity(), LifecycleRegistryOwner, SwipeRefreshLayout.OnRefreshListener {
+
+	private val lifecycleRegistry = LifecycleRegistry(this)
 
 	/**
 	 * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -33,6 +38,10 @@ class ItemListActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListen
 	private var mTwoPane: Boolean = false
 
 	private lateinit var swipeRefresh: SwipeRefreshLayout
+	private lateinit var itemsViewModel: ItemsViewModel
+
+
+	override fun getLifecycle() = lifecycleRegistry
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -41,8 +50,6 @@ class ItemListActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListen
 
 		swipeRefresh = findViewById(R.id.swipe_refresh)
 		swipeRefresh.setOnRefreshListener(this)
-
-		setupRecyclerView()
 
 		val toolbar: Toolbar = findViewById(R.id.toolbar)
 		setSupportActionBar(toolbar)
@@ -55,26 +62,28 @@ class ItemListActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListen
 			// activity should be in two-pane mode.
 			mTwoPane = true
 		}
+
+		itemsViewModel = ViewModelProviders.of(this).get(ItemsViewModel::class.java)
+		itemsViewModel.observeItems().observe(this, Observer {
+
+			if(it!!.hasError()){
+				Toast.makeText(applicationContext, R.string.failed_to_load_items, Toast.LENGTH_SHORT).show()
+			}
+
+			if(it.hasItems()){
+
+				val recyclerView: RecyclerView = findViewById(R.id.item_list)
+				recyclerView.adapter = SimpleItemRecyclerViewAdapter(it.items!!)
+			}
+		})
+
+		itemsViewModel.observeItems().fetch()
 	}
 
 	override fun onRefresh() {
 
-		setupRecyclerView()
+		itemsViewModel.observeItems().fetch()
 		swipeRefresh.isRefreshing = false
-	}
-
-	private fun setupRecyclerView() {
-
-		val recyclerView: RecyclerView = findViewById(R.id.item_list)!!
-
-		val rawJsonStream = resources.openRawResource(R.raw.data)
-		val json = IOUtils.toString(rawJsonStream, Charset.forName("UTF-8"))
-		IOUtils.closeQuietly(rawJsonStream)
-
-		val mapper = jacksonObjectMapper()
-		val items = mapper.readValue<List<Item>>(json)
-
-		recyclerView.adapter = SimpleItemRecyclerViewAdapter(items)
 	}
 
 	inner class SimpleItemRecyclerViewAdapter(private val mValues: List<Item>) : RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder>() {

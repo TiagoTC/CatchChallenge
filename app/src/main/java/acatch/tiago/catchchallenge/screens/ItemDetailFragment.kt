@@ -1,5 +1,7 @@
-package acatch.tiago.catchchallenge
+package acatch.tiago.catchchallenge.screens
 
+import acatch.tiago.catchchallenge.R
+import acatch.tiago.catchchallenge.network.beans.Item
 import android.os.Bundle
 import android.support.design.widget.CollapsingToolbarLayout
 import android.support.v4.app.Fragment

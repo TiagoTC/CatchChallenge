@@ -1,6 +1,5 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
@@ -15,16 +14,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/text_margin"
-            android:textIsSelectable="true"
-            tools:context="acatch.tiago.catchchallenge.ItemDetailFragment"/>
+            android:textIsSelectable="true"/>
 
         <TextView
             android:id="@+id/subtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/text_margin"
-            android:textIsSelectable="true"
-            tools:context="acatch.tiago.catchchallenge.ItemDetailFragment"/>
+            android:textIsSelectable="true"/>
 
         <TextView
             android:id="@+id/content"
@@ -32,8 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/text_margin"
             android:padding="@dimen/text_margin"
-            android:textIsSelectable="true"
-            tools:context="acatch.tiago.catchchallenge.ItemDetailFragment"/>
+            android:textIsSelectable="true"/>
 
     </LinearLayout>
 

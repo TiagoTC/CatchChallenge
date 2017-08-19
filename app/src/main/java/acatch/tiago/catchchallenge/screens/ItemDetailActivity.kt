@@ -1,5 +1,6 @@
-package acatch.tiago.catchchallenge
+package acatch.tiago.catchchallenge.screens
 
+import acatch.tiago.catchchallenge.R
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity

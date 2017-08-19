@@ -1,6 +1,7 @@
 <resources>
     <string name="id">ID: %d</string>
     <string name="subtitle">Subtitle: %s</string>
+    <string name="failed_to_load_items">Failed to load items</string>
     <string name="app_name">Catch Challenge</string>
     <string name="title_item_detail">Item Detail</string>
 </resources>
