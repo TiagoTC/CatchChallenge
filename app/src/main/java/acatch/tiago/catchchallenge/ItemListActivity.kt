@@ -1,7 +1,5 @@
 package acatch.tiago.catchchallenge
 
-
-import acatch.tiago.catchchallenge.dummy.DummyContent
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -11,6 +9,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
+import org.apache.commons.io.IOUtils
+import java.nio.charset.Charset
+
 
 /**
  * An activity representing a list of Items. This activity
@@ -51,10 +54,17 @@ class ItemListActivity : AppCompatActivity() {
 
 	private fun setupRecyclerView(recyclerView: RecyclerView) {
 
-		recyclerView.adapter = SimpleItemRecyclerViewAdapter(DummyContent.ITEMS)
+		val rawJsonStream = resources.openRawResource(R.raw.data)
+		val json = IOUtils.toString(rawJsonStream, Charset.forName("UTF-8"))
+		IOUtils.closeQuietly(rawJsonStream)
+
+		val mapper = jacksonObjectMapper()
+		val items = mapper.readValue<List<Item>>(json)
+
+		recyclerView.adapter = SimpleItemRecyclerViewAdapter(items)
 	}
 
-	inner class SimpleItemRecyclerViewAdapter(private val mValues: List<DummyContent.DummyItem>) : RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder>() {
+	inner class SimpleItemRecyclerViewAdapter(private val mValues: List<Item>) : RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder>() {
 
 		override fun onCreateViewHolder(parent: ViewGroup,
 										viewType: Int): ViewHolder {
@@ -67,20 +77,25 @@ class ItemListActivity : AppCompatActivity() {
 									  position: Int) {
 
 			holder.mItem = mValues[position]
-			holder.mIdView.text = mValues[position].id
-			holder.mContentView.text = mValues[position].content
+			holder.mIdView.text = mValues[position].id.toString()
+			holder.mContentView.text = mValues[position].title
 
 			holder.mView.setOnClickListener { v ->
+
 				if (mTwoPane) {
+
 					val arguments = Bundle()
-					arguments.putString(ItemDetailFragment.ARG_ITEM_ID, holder.mItem!!.id)
+					arguments.putSerializable(ItemDetailFragment.ARG_ITEM, holder.mItem)
+
 					val fragment = ItemDetailFragment()
 					fragment.arguments = arguments
 					supportFragmentManager.beginTransaction().replace(R.id.item_detail_container, fragment).commit()
+
 				} else {
+
 					val context = v.context
 					val intent = Intent(context, ItemDetailActivity::class.java)
-					intent.putExtra(ItemDetailFragment.ARG_ITEM_ID, holder.mItem!!.id)
+					intent.putExtra(ItemDetailFragment.ARG_ITEM, holder.mItem)
 
 					context.startActivity(intent)
 				}
@@ -94,14 +109,9 @@ class ItemListActivity : AppCompatActivity() {
 
 		inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
 
-			val mIdView: TextView
-			val mContentView: TextView
-			var mItem: DummyContent.DummyItem? = null
-
-			init {
-				mIdView = mView.findViewById<TextView>(R.id.id)
-				mContentView = mView.findViewById<TextView>(R.id.content)
-			}
+			val mIdView: TextView = mView.findViewById<TextView>(R.id.id)
+			val mContentView: TextView = mView.findViewById<TextView>(R.id.content)
+			var mItem: Item? = null
 
 			override fun toString(): String {
 
