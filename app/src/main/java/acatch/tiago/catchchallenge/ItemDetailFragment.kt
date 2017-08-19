@@ -32,8 +32,11 @@ class ItemDetailFragment : Fragment() {
 
 		val rootView = inflater!!.inflate(R.layout.item_detail, container, false)
 
+		val viewId: TextView = rootView.findViewById(R.id.id)
+		viewId.text = rootView.context.getString(R.string.id, mItem?.id)
+
 		val viewSubtitle: TextView = rootView.findViewById(R.id.subtitle)
-		viewSubtitle.text = mItem?.subtitle
+		viewSubtitle.text = rootView.context.getString(R.string.subtitle, mItem?.subtitle)
 
 		val viewContent: TextView = rootView.findViewById(R.id.content)
 		viewContent.text = mItem?.content

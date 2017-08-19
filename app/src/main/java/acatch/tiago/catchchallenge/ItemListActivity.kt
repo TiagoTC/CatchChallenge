@@ -2,6 +2,7 @@ package acatch.tiago.catchchallenge
 
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
@@ -23,7 +24,7 @@ import java.nio.charset.Charset
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
  */
-class ItemListActivity : AppCompatActivity() {
+class ItemListActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
 
 	/**
 	 * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -31,17 +32,21 @@ class ItemListActivity : AppCompatActivity() {
 	 */
 	private var mTwoPane: Boolean = false
 
+	private lateinit var swipeRefresh: SwipeRefreshLayout
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_item_list)
 
+		swipeRefresh = findViewById(R.id.swipe_refresh)
+		swipeRefresh.setOnRefreshListener(this)
+
+		setupRecyclerView()
+
 		val toolbar: Toolbar = findViewById(R.id.toolbar)
 		setSupportActionBar(toolbar)
 		toolbar.title = title
-
-		val recyclerView: RecyclerView = findViewById(R.id.item_list)!!
-		setupRecyclerView(recyclerView)
 
 		if (findViewById<View>(R.id.item_detail_container) != null) {
 			// The detail container view will be present only in the
@@ -52,7 +57,15 @@ class ItemListActivity : AppCompatActivity() {
 		}
 	}
 
-	private fun setupRecyclerView(recyclerView: RecyclerView) {
+	override fun onRefresh() {
+
+		setupRecyclerView()
+		swipeRefresh.isRefreshing = false
+	}
+
+	private fun setupRecyclerView() {
+
+		val recyclerView: RecyclerView = findViewById(R.id.item_list)!!
 
 		val rawJsonStream = resources.openRawResource(R.raw.data)
 		val json = IOUtils.toString(rawJsonStream, Charset.forName("UTF-8"))
@@ -112,11 +125,6 @@ class ItemListActivity : AppCompatActivity() {
 			val mIdView: TextView = mView.findViewById<TextView>(R.id.id)
 			val mContentView: TextView = mView.findViewById<TextView>(R.id.content)
 			var mItem: Item? = null
-
-			override fun toString(): String {
-
-				return super.toString() + " '" + mContentView.text + "'"
-			}
 		}
 	}
 }

@@ -11,6 +11,14 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/text_margin"
+            android:textIsSelectable="true"
+            tools:context="acatch.tiago.catchchallenge.ItemDetailFragment"/>
+
+        <TextView
             android:id="@+id/subtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
