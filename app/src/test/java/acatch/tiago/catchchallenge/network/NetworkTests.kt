@@ -16,7 +16,7 @@ class NetworkTests{
 
 	@Test
 	@Throws(Exception::class)
-	fun test_get_items_call() {
+	fun `test_get_items_call`() {
 
 		val callResponse = network.getItems()
 		val items = callResponse.blockingGet()

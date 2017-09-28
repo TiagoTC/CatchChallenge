@@ -39,12 +39,17 @@ class ItemDetailActivity : AppCompatActivity() {
 
 	override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
-		val id = item.itemId
-		if (id == android.R.id.home) {
+		return when(item.itemId){
 
-			navigateUpTo(Intent(this, ItemListActivity::class.java))
-			return true
+			android.R.id.home -> {
+
+				navigateUpTo(Intent(this, ItemListActivity::class.java))
+				true
+			}
+
+			else -> {
+				super.onOptionsItemSelected(item)
+			}
 		}
-		return super.onOptionsItemSelected(item)
 	}
 }

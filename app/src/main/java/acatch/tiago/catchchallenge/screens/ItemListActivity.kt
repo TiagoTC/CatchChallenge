@@ -35,7 +35,7 @@ class ItemListActivity : AppCompatActivity(), LifecycleRegistryOwner, SwipeRefre
 	 * Whether or not the activity is in two-pane mode, i.e. running on a tablet
 	 * device.
 	 */
-	private var mTwoPane: Boolean = false
+	private var twoPane = false
 
 	private lateinit var swipeRefresh: SwipeRefreshLayout
 	private lateinit var itemsViewModel: ItemsViewModel
@@ -55,25 +55,22 @@ class ItemListActivity : AppCompatActivity(), LifecycleRegistryOwner, SwipeRefre
 		setSupportActionBar(toolbar)
 		toolbar.title = title
 
-		if (findViewById<View>(R.id.item_detail_container) != null) {
-			// The detail container view will be present only in the
-			// large-screen layouts (res/values-w900dp).
-			// If this view is present, then the
-			// activity should be in two-pane mode.
-			mTwoPane = true
-		}
+		twoPane = findViewById<View>(R.id.item_detail_container) != null
 
 		itemsViewModel = ViewModelProviders.of(this).get(ItemsViewModel::class.java)
 		itemsViewModel.observeItems().observe(this, Observer {
 
-			if(it!!.hasError()){
-				Toast.makeText(applicationContext, R.string.failed_to_load_items, Toast.LENGTH_SHORT).show()
-			}
+			it?.let {
 
-			if(it.hasItems()){
+				if(it.hasError()){
+					Toast.makeText(applicationContext, R.string.failed_to_load_items, Toast.LENGTH_SHORT).show()
+				}
 
-				val recyclerView: RecyclerView = findViewById(R.id.item_list)
-				recyclerView.adapter = SimpleItemRecyclerViewAdapter(it.items!!)
+				if(it.hasItems()){
+
+					val recyclerView: RecyclerView = findViewById(R.id.item_list)
+					recyclerView.adapter = SimpleItemRecyclerViewAdapter(it.items)
+				}
 			}
 		})
 
@@ -98,16 +95,16 @@ class ItemListActivity : AppCompatActivity(), LifecycleRegistryOwner, SwipeRefre
 		override fun onBindViewHolder(holder: ViewHolder,
 									  position: Int) {
 
-			holder.mItem = mValues[position]
-			holder.mIdView.text = mValues[position].id.toString()
-			holder.mContentView.text = mValues[position].title
+			holder.item = mValues[position]
+			holder.idView.text = mValues[position].id.toString()
+			holder.contentView.text = mValues[position].title
 
 			holder.mView.setOnClickListener { v ->
 
-				if (mTwoPane) {
+				if (twoPane) {
 
 					val arguments = Bundle()
-					arguments.putSerializable(ItemDetailFragment.ARG_ITEM, holder.mItem)
+					arguments.putSerializable(ItemDetailFragment.ARG_ITEM, holder.item)
 
 					val fragment = ItemDetailFragment()
 					fragment.arguments = arguments
@@ -117,7 +114,7 @@ class ItemListActivity : AppCompatActivity(), LifecycleRegistryOwner, SwipeRefre
 
 					val context = v.context
 					val intent = Intent(context, ItemDetailActivity::class.java)
-					intent.putExtra(ItemDetailFragment.ARG_ITEM, holder.mItem)
+					intent.putExtra(ItemDetailFragment.ARG_ITEM, holder.item)
 
 					context.startActivity(intent)
 				}
@@ -131,9 +128,9 @@ class ItemListActivity : AppCompatActivity(), LifecycleRegistryOwner, SwipeRefre
 
 		inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
 
-			val mIdView: TextView = mView.findViewById<TextView>(R.id.id)
-			val mContentView: TextView = mView.findViewById<TextView>(R.id.content)
-			var mItem: Item? = null
+			val idView: TextView = mView.findViewById(R.id.id)
+			val contentView: TextView = mView.findViewById(R.id.content)
+			var item: Item? = null
 		}
 	}
 }

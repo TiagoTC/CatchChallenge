@@ -11,6 +11,6 @@ import retrofit2.http.GET
  */
 internal interface IWebAPI {
 
-	@get:GET("master/data/data.json")
-	val items: Single<List<Item>>
+	@GET("master/data/data.json")
+	fun getItems(): Single<List<Item>>
 }

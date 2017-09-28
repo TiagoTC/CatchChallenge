@@ -9,12 +9,10 @@ import android.app.Application
  */
 class ThisApplication: Application() {
 
-	lateinit var network: INetwork
-
-	override fun onCreate() {
-
-		super.onCreate()
-
-		network = Network()
+	/**
+	 * In the real world I would use a dependency injection framework instead
+	 */
+	val network: INetwork by lazy{
+		Network()
 	}
 }

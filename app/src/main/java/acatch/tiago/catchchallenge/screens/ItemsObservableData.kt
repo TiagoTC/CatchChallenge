@@ -5,11 +5,11 @@ import acatch.tiago.catchchallenge.network.beans.Item
 /**
  * Created by tiago on 19/08/17.
  */
-class ItemsObservableData private constructor(val items: List<Item>?,
+class ItemsObservableData private constructor(val items: List<Item>,
 											  private val error: Boolean) {
 
 	fun hasItems(): Boolean {
-		return items != null
+		return items.isNotEmpty()
 	}
 
 	fun hasError(): Boolean {
@@ -23,7 +23,7 @@ class ItemsObservableData private constructor(val items: List<Item>?,
 		}
 
 		fun buildError(): ItemsObservableData {
-			return ItemsObservableData(null, true)
+			return ItemsObservableData(ArrayList(), true)
 		}
 	}
 }

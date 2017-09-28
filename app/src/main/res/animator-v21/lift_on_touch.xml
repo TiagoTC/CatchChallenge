@@ -5,7 +5,7 @@
         android:state_pressed="true">
         <set>
             <objectAnimator
-                android:duration="100"
+                android:duration="@integer/lift_animation_duration"
                 android:propertyName="translationZ"
                 android:valueTo="10dp"
                 android:valueType="floatType"/>
@@ -14,7 +14,7 @@
     <item>
         <set>
             <objectAnimator
-                android:duration="100"
+                android:duration="@integer/lift_animation_duration"
                 android:propertyName="translationZ"
                 android:valueTo="0"
                 android:valueType="floatType"/>
