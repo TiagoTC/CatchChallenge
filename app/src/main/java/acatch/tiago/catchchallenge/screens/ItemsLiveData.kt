@@ -13,7 +13,7 @@ import java.util.*
  * Created by tiago on 19/08/17.
  */
 class ItemsLiveData(private val network: INetwork,
-					private val disposables: MutableList<Disposable> = ArrayList<Disposable>()) : LiveData<ItemsObservableData>() {
+					private val disposables: MutableList<Disposable> = ArrayList()) : LiveData<ItemsObservableData>() {
 
 	fun fetch() {
 

@@ -23,6 +23,6 @@ class Network : INetwork {
 
 	override fun getItems(): Single<List<Item>> {
 
-		return weatherAPI.items
+		return weatherAPI.getItems()
 	}
 }
